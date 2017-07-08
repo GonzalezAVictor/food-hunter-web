@@ -1,7 +1,14 @@
 .App {
-  text-align: center;
+  
 }
 
-.container {
-  background-color: blue;
+.content {
+  display: inline-block;
+  width: 85%;
+  height: 100vh;
+  vertical-align: top;
+}
+
+.inlineBlock {
+  display: inline-block;
 }

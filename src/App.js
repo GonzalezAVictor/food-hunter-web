@@ -36,9 +36,7 @@ const SideBar_Wraper = ({component: Component, ...rest}) => {
   return ( 
     <Route {...rest} render={matchProps => ( 
       <div className='App'> 
-        <div className='sidebar'> 
           <Sidebar/> 
-        </div> 
         <div className='content'> 
           <Component {...matchProps} /> 
         </div> 
@@ -53,9 +51,9 @@ export default class App extends React.Component {
         <main>
           <Switch>
             <SideBar_Wraper path='/restaurant/dashboard' component={C_Dashboard}/> 
-            <Route path='/restaurant/promotions' component={C_Promotions}/>
-            <Route path='/restaurant/profile' component={C_Profile}/>
-            <Route path='/restaurant/calendar' component={C_Calendar}/>
+            <SideBar_Wraper path='/restaurant/promotions' component={C_Promotions}/>
+            <SideBar_Wraper path='/restaurant/profile' component={C_Profile}/>
+            <SideBar_Wraper path='/restaurant/calendar' component={C_Calendar}/>
           </Switch>
         </main>
       </div>
