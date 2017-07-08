@@ -12,3 +12,8 @@
 .inlineBlock {
   display: inline-block;
 }
+
+.test {
+  text-align: center;
+  display: inline-block;
+}

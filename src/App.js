@@ -4,7 +4,10 @@ import Dashboard from './restaurant/dashboard/Dashboard';
 import Promotions from './restaurant/promotions/Promotions';
 import Profile from './restaurant/profile/Profile';
 import Calendar from './restaurant/calendar/Calendar';
-import Sidebar from './shared/components/Sidebar'; 
+import Sidebar from './shared/components/Sidebar';
+import PromotionForm from './restaurant/promotions/PromotionForm';
+
+import PromotionsNavBar from './restaurant/promotions/PromotionsNavBar';
 
 require('./App.css'); 
 
@@ -22,7 +25,9 @@ const C_Dashboard = () => (
 
 const C_Promotions = () => (
   <Switch>
-    <Route path='/restaurant/promotions' component={Promotions}/>
+    <Route exact path='/restaurant/promotions' component={Promotions}/>
+    <Route exact path='/restaurant/promotions/list' component={Promotions}/>
+    <Route exact path='/restaurant/promotions/create' component={PromotionForm}/>
   </Switch>
   );
 
@@ -42,7 +47,20 @@ const SideBar_Wraper = ({component: Component, ...rest}) => {
         </div> 
       </div>    )} /> 
   ) 
-} 
+}
+
+const SideBar_PromotionsNavBar_Wraper = ({component: Component, ...rest}) => { 
+  return ( 
+    <Route {...rest} render={matchProps => ( 
+      <div className='App'> 
+          <Sidebar/> 
+        <div className='content'>
+          <PromotionsNavBar />
+          <Component {...matchProps} /> 
+        </div> 
+      </div>    )} /> 
+  ) 
+}
 
 export default class App extends React.Component {
   render() {
@@ -51,7 +69,7 @@ export default class App extends React.Component {
         <main>
           <Switch>
             <SideBar_Wraper path='/restaurant/dashboard' component={C_Dashboard}/> 
-            <SideBar_Wraper path='/restaurant/promotions' component={C_Promotions}/>
+            <SideBar_PromotionsNavBar_Wraper path='/restaurant/promotions' component={C_Promotions}/>
             <SideBar_Wraper path='/restaurant/profile' component={C_Profile}/>
             <SideBar_Wraper path='/restaurant/calendar' component={C_Calendar}/>
           </Switch>

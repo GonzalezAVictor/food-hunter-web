@@ -1,0 +1,7 @@
+export const COLOR = {
+  LIGHTGRAY: '#B5B2AF',
+  DARKBLUE: '#272A34',
+  DRYGREEN:'#889F85',
+  DRYRED: '#9E5C52',
+  GRAY: '#727985'
+}

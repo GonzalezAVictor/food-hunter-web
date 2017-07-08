@@ -1,16 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import { Menu, Icon } from 'antd';
+import { COLOR } from './../../utils/constants';
+
 import styled from 'styled-components';
 
 const SidebarNav = styled.ul`
-  color: red;
+  background-color: ${COLOR.DARKBLUE};
   height: 100vh;
   width: 15%;
   display: inline-block;
 
   > li {
     margin: 20px 10px;
+    font-size: 15px;
   }
 `
  
