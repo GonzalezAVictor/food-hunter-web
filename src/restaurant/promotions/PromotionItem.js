@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Switch } from 'antd';
+import { Icon, Switch, Modal } from 'antd';
 import { COLOR } from './../../utils/constants';
 
 import styled from 'styled-components';
@@ -30,6 +30,9 @@ const Actions = styled.div`
 export default class PromotionItem extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      modalVisible: false
+    }
     this.activePromotion = this.activePromotion.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
@@ -40,7 +43,22 @@ export default class PromotionItem extends React.Component {
   }
 
   handleDelete() {
+    this.setState({ modalVisible: true });
+  }
+
+  handleOk = (e) => {
+    console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
     this.props.deletePromotion(this.props.promotion.id);
+  }
+
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      modalVisible: false,
+    });
   }
 
   render() {
@@ -60,6 +78,15 @@ export default class PromotionItem extends React.Component {
           disabled={ promotionActive }
           checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />} />
         </Actions>
+        <Modal
+          title="Basic Modal"
+          visible={this.state.modalVisible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <p>This accion will delete the promotion {promotion.name} permanently.</p>
+          <p>Are you sure you want to continue?</p>
+        </Modal>
       </ItemContainer>
     );
   }
