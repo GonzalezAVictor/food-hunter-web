@@ -12,7 +12,7 @@ const Button = styled.div`
   color: black;
 `
 
-export default class PrimaryButton extends React.Component {
+export default class PrimaryButtonLink extends React.Component {
   static propTypes = {
     name: React.PropTypes.string,
   };
