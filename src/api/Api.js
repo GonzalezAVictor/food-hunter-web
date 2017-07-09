@@ -80,10 +80,29 @@ function createPromotion(promotion) {
     })
 }
 
+function deletePromotion(promotionId) {
+  console.log('API deletePromotion');
+  fetch(FH_API_ENDPOINT.concat(`/restaurants/promotions/${promotionId}`), {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  }).then((response) => {
+    console.log('satus: ',response.status);
+    return response.json()
+  }).then((responseJson) => {
+    console.log('responseJson: ', responseJson);
+      // cb(responseJson.data);
+    })
+}
+
 const Api = {
   getPromotions,
   activePromotion,
   getRestaurantData,
-  createPromotion
+  createPromotion,
+  deletePromotion
 };
 export default Api;

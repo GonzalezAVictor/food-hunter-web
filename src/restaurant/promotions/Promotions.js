@@ -38,6 +38,11 @@ export default class Promotions extends React.Component {
     Api.activePromotion(id);
   }
 
+  deletePromotion(id) {
+    console.log('delete: ', id);
+    Api.deletePromotion(id);
+  }
+
   createPromotionsList() {
     return this.state.promotions.map((promotion, i) => {
       console.log(promotion);
@@ -46,6 +51,7 @@ export default class Promotions extends React.Component {
           key={i}
           promotion={promotion}
           activePromotion={this.activePromotion}
+          deletePromotion={this.deletePromotion}
         />)
     });
   }

@@ -21,7 +21,7 @@ const Actions = styled.div`
   display: inline-block;
   float: right;
 
-  > i {
+  > a  > i {
     font-size: 15px;
     margin: 3px 4px;
   }
@@ -31,11 +31,16 @@ export default class PromotionItem extends React.Component {
   constructor(props) {
     super(props);
     this.activePromotion = this.activePromotion.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   activePromotion() {
     let { promotion } = this.props;
     this.props.activePromotion(promotion.id);
+  }
+
+  handleDelete() {
+    this.props.deletePromotion(this.props.promotion.id);
   }
 
   render() {
@@ -47,8 +52,8 @@ export default class PromotionItem extends React.Component {
           { promotion.name }
         </PromotionName>
         <Actions>
-          <Icon type="edit" />
-          <Icon type="delete" />
+          <a onClick={this.handleEdit} ><Icon type="edit" /></a>
+          <a onClick={this.handleDelete} ><Icon type="delete" /></a>
           Active: <Switch defaultChecked={ promotionActive }
           onChange={this.activePromotion}
           size="small"
