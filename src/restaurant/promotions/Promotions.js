@@ -23,13 +23,21 @@ export default class Promotions extends React.Component {
       currentTagView: 'promotionsList',
       promotions: []
     }
+    this.fetchPromotions = this.fetchPromotions.bind(this);
+    this.deletePromotion = this.deletePromotion.bind(this);
+    this.createPromotionsList = this.createPromotionsList.bind(this);
   }
 
   componentWillMount() {
+    this.fetchPromotions();
+  }
+
+  fetchPromotions() {
     let cb = (promotions) => {
       this.setState({
         promotions: promotions
       });
+      this.createPromotionsList();
     }
     Api.getPromotions(cb);
   }
@@ -41,6 +49,7 @@ export default class Promotions extends React.Component {
   deletePromotion(id) {
     console.log('delete: ', id);
     Api.deletePromotion(id);
+    this.fetchPromotions();
   }
 
   createPromotionsList() {
