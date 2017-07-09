@@ -1,5 +1,5 @@
 import React from 'react';
-import PrimaryButton from './../../shared/components/PrimaryButton';
+import PrimaryButtonLink from './../../shared/components/PrimaryButtonLink';
 
 import PromotionsComponentStyled from './PromotionsComponentsStyled';
 
@@ -15,8 +15,8 @@ export default class PromotionsNavBar extends React.Component {
   render() {
     return (
       <div>
-        <PrimaryButton text='Promotions list' linkTo='/restaurant/promotions/list' />
-        <PrimaryButton text='Create new promotion' linkTo='/restaurant/promotions/create' />
+        <PrimaryButtonLink text='Promotions list' linkTo='/restaurant/promotions/list' />
+        <PrimaryButtonLink text='Create new promotion' linkTo='/restaurant/promotions/create' />
       </div>
     );
   }

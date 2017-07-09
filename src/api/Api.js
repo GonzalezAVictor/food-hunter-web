@@ -20,6 +20,22 @@ function getPromotions(cb) {
     })
 }
 
+function getRestaurantData(cb) {
+  console.log('Api getRestaurantData');
+  fetch(FH_API_ENDPOINT.concat('/restaurants/2'), {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token}`
+
+    }
+  })
+  .then((response) => response.json())
+  .then((responseJson) => {
+      cb(responseJson.data);
+    })
+}
+
 function activePromotion(promotionId) {
   console.log('API activePromotion');
   fetch(FH_API_ENDPOINT.concat('/restaurants/promotions/promotionsActive'), {
@@ -40,8 +56,34 @@ function activePromotion(promotionId) {
     })
 }
 
+function createPromotion(promotion) {
+  console.log('API createPromotion');
+  fetch(FH_API_ENDPOINT.concat('/restaurants/promotions'), {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      name: promotion.name,
+      details: promotion.details,
+      promotion_type: promotion.promotion_type,
+      category_id: promotion.category_id
+    })
+  }).then((response) => {
+    console.log('satus: ',response.status);
+    return response.json()
+  }).then((responseJson) => {
+    console.log('responseJson: ', responseJson);
+      // cb(responseJson.data);
+    })
+}
+
 const Api = {
   getPromotions,
-  activePromotion
+  activePromotion,
+  getRestaurantData,
+  createPromotion
 };
 export default Api;
