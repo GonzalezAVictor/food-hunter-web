@@ -28,31 +28,31 @@ const Actions = styled.div`
 `
 
 export default class PromotionItem extends React.Component {
-  static propTypes = {
-    name: React.PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
+    this.activePromotion = this.activePromotion.bind(this);
   }
 
-  onChange() {
-    console.log('lalalala');
+  activePromotion() {
+    let { promotion } = this.props;
+    this.props.activePromotion(promotion.id);
   }
 
   render() {
+    let { promotion } = this.props;
+    let promotionActive = promotion.active === 1 ? true : false;
     return (
       <ItemContainer>
         <PromotionName>
-        2 x 1 en hamburguesas
+          { promotion.name }
         </PromotionName>
         <Actions>
           <Icon type="edit" />
           <Icon type="delete" />
-          Active: <Switch defaultChecked={true}
-          onChange={this.onChange}
+          Active: <Switch defaultChecked={ promotionActive }
+          onChange={this.activePromotion}
           size="small"
-          disabled={true}
+          disabled={ promotionActive }
           checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />} />
         </Actions>
       </ItemContainer>
