@@ -31,6 +31,7 @@ export default class Sidebar extends React.Component {
         <li><Link to='/restaurant/promotions'>Promotions</Link></li>
         <li><Link to='/restaurant/profile'>Profile</Link></li>
         <li><Link to='/restaurant/calendar'>Calendar</Link></li>
+        <li><Link to='/restaurant/stats'>Stats</Link></li>
       </SidebarNav> 
     ); 
   } 
