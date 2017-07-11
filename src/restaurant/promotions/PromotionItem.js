@@ -31,39 +31,60 @@ export default class PromotionItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false
+      modalDeleteVisible: false,
+      modalActiveVisible: false,
+      promotionActive: false
     }
     this.activePromotion = this.activePromotion.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
 
+  componentWillMount() {
+    let isActive = this.props.promotion.active === 1 ? true : false;
+    this.setState({ promotionActive: isActive });
+  }
+
   activePromotion() {
-    let { promotion } = this.props;
-    this.props.activePromotion(promotion.id);
+    this.setState({ 
+      modalActiveVisible: true,
+      promotionActive: true
+       });
   }
 
   handleDelete() {
-    this.setState({ modalVisible: true });
+    this.setState({ modalDeleteVisible: true });
   }
 
-  handleOk = (e) => {
-    console.log(e);
+  handledeleteOk = (e) => {
     this.setState({
-      modalVisible: false,
+      modalDeleteVisible: false,
     });
     this.props.deletePromotion(this.props.promotion.id);
   }
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleActiveOk = (e) => {
+    let { promotion } = this.props;
     this.setState({
-      modalVisible: false,
+      modalActiveVisible: false,
+    });
+    this.props.activePromotion(promotion.id);
+  }
+
+  handleDeleteCancel = (e) => {
+    this.setState({
+      modalDeleteVisible: false,
+    });
+  }
+
+  handleActiveCancel = (e) => {
+    this.setState({
+      modalActiveVisible: false,
+      promotionActive: false
     });
   }
 
   render() {
     let { promotion } = this.props;
-    let promotionActive = promotion.active === 1 ? true : false;
     return (
       <ItemContainer>
         <PromotionName>
@@ -72,19 +93,31 @@ export default class PromotionItem extends React.Component {
         <Actions>
           <a onClick={this.handleEdit} ><Icon type="edit" /></a>
           <a onClick={this.handleDelete} ><Icon type="delete" /></a>
-          Active: <Switch defaultChecked={ promotionActive }
+          Active: <Switch 
           onChange={this.activePromotion}
           size="small"
-          disabled={ promotionActive }
+          checked={ this.state.promotionActive }
+          disabled={ this.state.promotionActive }
           checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />} />
         </Actions>
         <Modal
           title="Basic Modal"
-          visible={this.state.modalVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          visible={this.state.modalDeleteVisible}
+          onOk={this.handledeleteOk}
+          onCancel={this.handleDeleteCancel}
         >
           <p>This accion will delete the promotion {promotion.name} permanently.</p>
+          <p>Are you sure you want to continue?</p>
+        </Modal>
+
+
+        <Modal
+          title="Actie promotion"
+          visible={this.state.modalActiveVisible}
+          onOk={this.handleActiveOk}
+          onCancel={this.handleActiveCancel}
+        >
+          <p>This action will active the promotion { promotion.name } and is not revertible.</p>
           <p>Are you sure you want to continue?</p>
         </Modal>
       </ItemContainer>
