@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Switch, Modal, Button, TimePicker, DatePicker } from 'antd';
+import { Icon, Switch, Modal, Button, TimePicker, DatePicker, InputNumber } from 'antd';
 import { COLOR } from './../../utils/constants';
 
 import styled from 'styled-components';
@@ -21,6 +21,7 @@ const PickersContainer = styled.div`
 
   > .ant-btn {
     float: right;
+    bottom: 27px;
   }
 
   > span {
@@ -153,14 +154,13 @@ export default class PromotionItem extends React.Component {
 
 
         <Modal
-          title="Actie promotion"
+          title={`Actie ${promotion.name} promotion`}
           visible={this.state.modalActiveVisible}
           onOk={this.handleActiveOk}
           onCancel={this.handleActiveCancel}
           footer={null}
         >
           <p>This action will active the promotion { promotion.name } and is not revertible.</p>
-          <p>Are you sure you want to continue?</p>
           <br/>
           <ButtonContainer>
             <Button type="primary" onClick={this.activeToday}>Today</Button>
@@ -170,11 +170,27 @@ export default class PromotionItem extends React.Component {
           <br/>
           <PickersContainer>
             { showSchedule ? 
-              <DatePicker footer={null} onChange={this.onChangeTime} /> : null }
+              <div>
+                Choose the day to active the promotion: <br/>
+                <DatePicker footer={null} onChange={this.onChangeTime} />
+              </div> : null }
             { showActiveToday ? 
-              <TimePicker onChange={this.onChangeTime} format={'HH:mm'} /> : null }
+              <div>
+                Select the time to active the promotion: <br/>
+                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} />
+              </div> : null }
+            { promotion.promotion_type === 'premium' && (showSchedule || showActiveToday) ?
+              <div>
+                Choose the amount of promotions availables: <br/>
+                <InputNumber min={1} max={10} defaultValue={5} /*onChange={onChange}*/ />
+              </div> : null }
+            { promotion.promotion_type === 'flash' && (showSchedule || showActiveToday) ?
+              <div>
+                Choose the time to end the promotion: <br/>
+                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} />
+              </div> : null }
             { showSchedule || showActiveToday ?
-              <Button type="primary" onClick={this.handleActiveOk}>Active promotion</Button>: null }
+              <Button type="primary" onClick={this.handleActiveOk}>Active promotion</Button> : null }
           </PickersContainer>
         </Modal>
       </ItemContainer>
