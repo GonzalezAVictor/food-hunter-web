@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Switch, Modal } from 'antd';
+import { Icon, Switch, Modal, Button, TimePicker, DatePicker } from 'antd';
 import { COLOR } from './../../utils/constants';
 
 import styled from 'styled-components';
@@ -9,6 +9,23 @@ const ItemContainer = styled.div`
   margin: 5px 0px;
   border-radius: 8px;
   padding: 5px 10px;
+`
+
+const ButtonContainer = styled.div`
+  > .ant-btn {
+    margin-right: 12px;
+  }
+`
+
+const PickersContainer = styled.div`
+
+  > .ant-btn {
+    float: right;
+  }
+
+  > span {
+    margin-right: 10px;
+  }
 `
 
 const PromotionName = styled.p`
@@ -33,10 +50,15 @@ export default class PromotionItem extends React.Component {
     this.state = {
       modalDeleteVisible: false,
       modalActiveVisible: false,
-      promotionActive: false
+      promotionActive: false,
+      showActiveToday: false,
+      showSchedule: false
     }
     this.activePromotion = this.activePromotion.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.activeToday = this.activeToday.bind(this);
+    this.schedule = this.schedule.bind(this);
+    this.handleActiveCancel = this.handleActiveCancel.bind(this);
   }
 
   componentWillMount() {
@@ -83,8 +105,27 @@ export default class PromotionItem extends React.Component {
     });
   }
 
+  activeToday() {
+    this.setState({ 
+      showActiveToday: true,
+      showSchedule: false
+    });
+  }
+
+  schedule() {
+    this.setState({
+      showActiveToday: true,
+      showSchedule: true
+    });
+  }
+
+  onChangeTime = (time) => {
+    console.log('time: ', time);
+  }
+
   render() {
     let { promotion } = this.props;
+    let { showSchedule, showActiveToday } = this.state;
     return (
       <ItemContainer>
         <PromotionName>
@@ -116,9 +157,25 @@ export default class PromotionItem extends React.Component {
           visible={this.state.modalActiveVisible}
           onOk={this.handleActiveOk}
           onCancel={this.handleActiveCancel}
+          footer={null}
         >
           <p>This action will active the promotion { promotion.name } and is not revertible.</p>
           <p>Are you sure you want to continue?</p>
+          <br/>
+          <ButtonContainer>
+            <Button type="primary" onClick={this.activeToday}>Today</Button>
+            <Button type="primary" onClick={this.schedule}>Schedule</Button>
+            <Button onClick={this.handleActiveCancel}>Cancel</Button>
+          </ButtonContainer>
+          <br/>
+          <PickersContainer>
+            { showSchedule ? 
+              <DatePicker footer={null} onChange={this.onChangeTime} /> : null }
+            { showActiveToday ? 
+              <TimePicker onChange={this.onChangeTime} format={'HH:mm'} /> : null }
+            { showSchedule || showActiveToday ?
+              <Button type="primary" onClick={this.handleActiveOk}>Active promotion</Button>: null }
+          </PickersContainer>
         </Modal>
       </ItemContainer>
     );
