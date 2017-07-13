@@ -59,7 +59,8 @@ export default class PromotionItem extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.activeToday = this.activeToday.bind(this);
     this.schedule = this.schedule.bind(this);
-    this.handleActiveCancel = this.handleActiveCancel.bind(this);
+    this.range = this.range.bind(this);
+    this.disabledMinutes = this.disabledMinutes.bind(this);
   }
 
   componentWillMount() {
@@ -124,6 +125,20 @@ export default class PromotionItem extends React.Component {
     console.log('time: ', time);
   }
 
+  range() {
+    const result = [];
+    for (let i = 0; i < 60; i++) {
+      if (!(i === 0 || i === 15 || i === 30 || i === 45)) {
+        result.push(i);
+      }
+    }
+    return result;
+  }
+
+  disabledMinutes() {
+      return this.range();
+  }
+
   render() {
     let { promotion } = this.props;
     let { showSchedule, showActiveToday } = this.state;
@@ -177,7 +192,7 @@ export default class PromotionItem extends React.Component {
             { showActiveToday ? 
               <div>
                 Select the time to active the promotion: <br/>
-                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} />
+                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} disabledMinutes={this.disabledMinutes} hideDisabledOptions />
               </div> : null }
             { promotion.promotion_type === 'premium' && (showSchedule || showActiveToday) ?
               <div>
