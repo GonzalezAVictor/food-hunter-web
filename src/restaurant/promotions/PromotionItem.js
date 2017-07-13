@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Switch, Modal } from 'antd';
+import { Icon, Switch, Modal, Button, TimePicker, DatePicker, InputNumber } from 'antd';
 import { COLOR } from './../../utils/constants';
 
 import styled from 'styled-components';
@@ -9,6 +9,24 @@ const ItemContainer = styled.div`
   margin: 5px 0px;
   border-radius: 8px;
   padding: 5px 10px;
+`
+
+const ButtonContainer = styled.div`
+  > .ant-btn {
+    margin-right: 12px;
+  }
+`
+
+const PickersContainer = styled.div`
+
+  > .ant-btn {
+    float: right;
+    bottom: 27px;
+  }
+
+  > span {
+    margin-right: 10px;
+  }
 `
 
 const PromotionName = styled.p`
@@ -31,39 +49,99 @@ export default class PromotionItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false
+      modalDeleteVisible: false,
+      modalActiveVisible: false,
+      promotionActive: false,
+      showActiveToday: false,
+      showSchedule: false
     }
     this.activePromotion = this.activePromotion.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.activeToday = this.activeToday.bind(this);
+    this.schedule = this.schedule.bind(this);
+    this.range = this.range.bind(this);
+    this.disabledMinutes = this.disabledMinutes.bind(this);
+  }
+
+  componentWillMount() {
+    let isActive = this.props.promotion.active === 1 ? true : false;
+    this.setState({ promotionActive: isActive });
   }
 
   activePromotion() {
-    let { promotion } = this.props;
-    this.props.activePromotion(promotion.id);
+    this.setState({ 
+      modalActiveVisible: true,
+      promotionActive: true
+       });
   }
 
   handleDelete() {
-    this.setState({ modalVisible: true });
+    this.setState({ modalDeleteVisible: true });
   }
 
-  handleOk = (e) => {
-    console.log(e);
+  handledeleteOk = (e) => {
     this.setState({
-      modalVisible: false,
+      modalDeleteVisible: false,
     });
     this.props.deletePromotion(this.props.promotion.id);
   }
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleActiveOk = (e) => {
+    let { promotion } = this.props;
     this.setState({
-      modalVisible: false,
+      modalActiveVisible: false,
     });
+    this.props.activePromotion(promotion.id);
+  }
+
+  handleDeleteCancel = (e) => {
+    this.setState({
+      modalDeleteVisible: false,
+    });
+  }
+
+  handleActiveCancel = (e) => {
+    this.setState({
+      modalActiveVisible: false,
+      promotionActive: false
+    });
+  }
+
+  activeToday() {
+    this.setState({ 
+      showActiveToday: true,
+      showSchedule: false
+    });
+  }
+
+  schedule() {
+    this.setState({
+      showActiveToday: true,
+      showSchedule: true
+    });
+  }
+
+  onChangeTime = (time) => {
+    console.log('time: ', time);
+  }
+
+  range() {
+    const result = [];
+    for (let i = 0; i < 60; i++) {
+      if (!(i === 0 || i === 15 || i === 30 || i === 45)) {
+        result.push(i);
+      }
+    }
+    return result;
+  }
+
+  disabledMinutes() {
+      return this.range();
   }
 
   render() {
     let { promotion } = this.props;
-    let promotionActive = promotion.active === 1 ? true : false;
+    let { showSchedule, showActiveToday } = this.state;
     return (
       <ItemContainer>
         <PromotionName>
@@ -72,20 +150,63 @@ export default class PromotionItem extends React.Component {
         <Actions>
           <a onClick={this.handleEdit} ><Icon type="edit" /></a>
           <a onClick={this.handleDelete} ><Icon type="delete" /></a>
-          Active: <Switch defaultChecked={ promotionActive }
+          Active: <Switch 
           onChange={this.activePromotion}
           size="small"
-          disabled={ promotionActive }
+          checked={ this.state.promotionActive }
+          disabled={ this.state.promotionActive }
           checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />} />
         </Actions>
         <Modal
           title="Basic Modal"
-          visible={this.state.modalVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          visible={this.state.modalDeleteVisible}
+          onOk={this.handledeleteOk}
+          onCancel={this.handleDeleteCancel}
         >
           <p>This accion will delete the promotion {promotion.name} permanently.</p>
           <p>Are you sure you want to continue?</p>
+        </Modal>
+
+
+        <Modal
+          title={`Actie ${promotion.name} promotion`}
+          visible={this.state.modalActiveVisible}
+          onOk={this.handleActiveOk}
+          onCancel={this.handleActiveCancel}
+          footer={null}
+        >
+          <p>This action will active the promotion { promotion.name } and is not revertible.</p>
+          <br/>
+          <ButtonContainer>
+            <Button type="primary" onClick={this.activeToday}>Today</Button>
+            <Button type="primary" onClick={this.schedule}>Schedule</Button>
+            <Button onClick={this.handleActiveCancel}>Cancel</Button>
+          </ButtonContainer>
+          <br/>
+          <PickersContainer>
+            { showSchedule ? 
+              <div>
+                Choose the day to active the promotion: <br/>
+                <DatePicker footer={null} onChange={this.onChangeTime} />
+              </div> : null }
+            { showActiveToday ? 
+              <div>
+                Select the time to active the promotion: <br/>
+                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} disabledMinutes={this.disabledMinutes} hideDisabledOptions />
+              </div> : null }
+            { promotion.promotion_type === 'premium' && (showSchedule || showActiveToday) ?
+              <div>
+                Choose the amount of promotions availables: <br/>
+                <InputNumber min={1} max={10} defaultValue={5} /*onChange={onChange}*/ />
+              </div> : null }
+            { promotion.promotion_type === 'flash' && (showSchedule || showActiveToday) ?
+              <div>
+                Choose the time to end the promotion: <br/>
+                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} />
+              </div> : null }
+            { showSchedule || showActiveToday ?
+              <Button type="primary" onClick={this.handleActiveOk}>Active promotion</Button> : null }
+          </PickersContainer>
         </Modal>
       </ItemContainer>
     );
