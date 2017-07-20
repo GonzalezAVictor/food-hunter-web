@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Switch, Modal, Button, TimePicker, DatePicker, InputNumber } from 'antd';
+import { Icon, Switch, Modal, Button, TimePicker, DatePicker, InputNumber, Slider, Row, Col, notification } from 'antd';
 import { COLOR } from './../../utils/constants';
 
 import styled from 'styled-components';
@@ -45,6 +45,13 @@ const Actions = styled.div`
   }
 `
 
+const openNotificationWithIcon = (type) => {
+  notification[type]({
+    message: 'Error activating promotion',
+    description: 'Please choose a correct date or time',
+  });
+};
+
 export default class PromotionItem extends React.Component {
   constructor(props) {
     super(props);
@@ -53,7 +60,9 @@ export default class PromotionItem extends React.Component {
       modalActiveVisible: false,
       promotionActive: false,
       showActiveToday: false,
-      showSchedule: false
+      showSchedule: false,
+      duration: 30,
+      startAt: ''
     }
     this.activePromotion = this.activePromotion.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -61,6 +70,10 @@ export default class PromotionItem extends React.Component {
     this.schedule = this.schedule.bind(this);
     this.range = this.range.bind(this);
     this.disabledMinutes = this.disabledMinutes.bind(this);
+    this.onChangeTime = this.onChangeTime.bind(this);
+    this.handleChangeDuration = this.handleChangeDuration.bind(this);
+    this.handleActiveOk = this.handleActiveOk.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   componentWillMount() {
@@ -88,10 +101,23 @@ export default class PromotionItem extends React.Component {
 
   handleActiveOk = (e) => {
     let { promotion } = this.props;
+    let { startAt, duration } = this.state;
+    promotion.startAt = startAt;
+    if (promotion.startAt) {
+      let endAt = startAt;
+      promotion.endAt = endAt + (duration * 60); // duration * 60 = duration on seconds
+      this.props.activePromotion(promotion);
+    } else {
+      openNotificationWithIcon('error')
+      this.handleActiveCancel();
+    }
+    this.closeModal();
+  }
+
+  closeModal() {
     this.setState({
       modalActiveVisible: false,
     });
-    this.props.activePromotion(promotion.id);
   }
 
   handleDeleteCancel = (e) => {
@@ -122,7 +148,11 @@ export default class PromotionItem extends React.Component {
   }
 
   onChangeTime = (time) => {
+    this.setState({
+      startAt: time.unix()
+    });
     console.log('time: ', time);
+    console.log('time: ', time.unix());
   }
 
   range() {
@@ -136,7 +166,14 @@ export default class PromotionItem extends React.Component {
   }
 
   disabledMinutes() {
-      return this.range();
+    return this.range();
+  }
+
+  handleChangeDuration(value) {
+    console.log('duration: ', this.state.duration);
+    this.setState({
+      duration: value,
+    });
   }
 
   render() {
@@ -199,10 +236,29 @@ export default class PromotionItem extends React.Component {
                 Choose the amount of promotions availables: <br/>
                 <InputNumber min={1} max={10} defaultValue={5} /*onChange={onChange}*/ />
               </div> : null }
-            { promotion.promotion_type === 'flash' && (showSchedule || showActiveToday) ?
+            { showSchedule || showActiveToday ?
               <div>
-                Choose the time to end the promotion: <br/>
-                <TimePicker onChange={this.onChangeTime} format={'HH:mm'} />
+              Choose the duration for the promotion:
+              <Row>
+                <Col span={12}>
+                  <Slider min={0} max={150} step={15} onChange={this.handleChangeDuration} value={this.state.duration} />
+                </Col>
+                <Col span={4}>
+                  <InputNumber
+                    min={0}
+                    max={150}
+                    style={{ marginLeft: 16 }}
+                    step={15}
+                    value={this.state.duration}
+                    onChange={this.handleChangeDuration}
+                  />
+                </Col>
+                <Col span={2} offset={1}>
+                  minutes
+                </Col>
+              </Row>
+                <br/>
+                <br/>
               </div> : null }
             { showSchedule || showActiveToday ?
               <Button type="primary" onClick={this.handleActiveOk}>Active promotion</Button> : null }

@@ -42,8 +42,8 @@ export default class Promotions extends React.Component {
     Api.getPromotions(cb);
   }
 
-  activePromotion(id) {
-    Api.activePromotion(id);
+  activePromotion(promotion) {
+    Api.activePromotion(promotion);
   }
 
   deletePromotion(id) {
