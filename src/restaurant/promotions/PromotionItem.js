@@ -8,7 +8,11 @@ const ItemContainer = styled.div`
   background-color: ${COLOR.LIGHTGRAY};
   margin: 5px 0px;
   border-radius: 8px;
-  padding: 5px 10px;
+  padding: 15px 15px;
+
+  > i {
+    font-size: 15px;
+  }
 `
 
 const ButtonContainer = styled.div`
@@ -32,12 +36,14 @@ const PickersContainer = styled.div`
 const PromotionName = styled.p`
   display: inline-block;
   font-size: 15px;
+  margin-right: 8px;
 `
 
 const Actions = styled.div`
-  width: 125px;
+  width: 115px;
   display: inline-block;
   float: right;
+  transform: translateY(-3px);
 
   > a  > i {
     font-size: 15px;
@@ -85,7 +91,7 @@ export default class PromotionItem extends React.Component {
     this.setState({ 
       modalActiveVisible: true,
       promotionActive: true
-       });
+    });
   }
 
   handleDelete() {
@@ -184,15 +190,11 @@ export default class PromotionItem extends React.Component {
         <PromotionName>
           { promotion.name }
         </PromotionName>
+        { promotion.active ? <Icon type="check-circle-o" /> : null }
         <Actions>
           <a onClick={this.handleEdit} ><Icon type="edit" /></a>
           <a onClick={this.handleDelete} ><Icon type="delete" /></a>
-          Active: <Switch 
-          onChange={this.activePromotion}
-          size="small"
-          checked={ this.state.promotionActive }
-          disabled={ this.state.promotionActive }
-          checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross" />} />
+          <Button onClick={this.activePromotion}>Active</Button>
         </Actions>
         <Modal
           title="Basic Modal"

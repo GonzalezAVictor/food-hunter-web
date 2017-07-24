@@ -80,6 +80,7 @@ export default class App extends React.Component {
             <SideBar_Wraper path='/restaurant/profile' component={C_Profile}/>
             <SideBar_Wraper path='/restaurant/calendar' component={C_Calendar}/>
             <SideBar_Wraper exact path='/restaurant/stats' component={C_Stats}/>
+            <Redirect exact to="/restaurant/dashboard" />
           </Switch>
         </main>
       </div>
